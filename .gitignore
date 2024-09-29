@@ -1,0 +1,4 @@
+venv/
+.server/login.db
+*.pyc
+*.db

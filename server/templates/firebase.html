@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ANDROID</title>
+	<script
+	  src="https://code.jquery.com/jquery-3.4.1.min.js"
+	  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+	  crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+	<script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-messaging.js"></script>
+
+	<button id="backbtn" onclick="goback()"> ← Back to main</button><br>
+	<p>Notification in Firebase can be sent through two main methods. </p>
+	<div class="slider-container">
+		<div class="slider-buttons">
+			<button id="backbtn" onclick="loadFirebaseScript_API()" class="active">API Method</button>
+			<button id="backbtn" onclick="loadFirebaseScript_SDK()">SDK Method</button>
+		</div>
+		<br>
+		<div class="template">
+			<div class="inputs">
+					<form method="POST" id="firebase-api" action="/firebase/api">
+						<div>
+                            <label for="token"><b>Enter Firebase Token*: </b></label><br>
+                            <input id="above_inputs" type=text name="token" required placeholder="F$E@R..." />
+                        </div>
+						<div>
+                            <label for="key"><b>Enter Firebase Server Key*: </b></label><br>
+                            <input id="above_inputs" type=text name="key" required placeholder="AAAWTW..." />
+                        </div>
+							<hr class="styled-hr"><br>
+							<h3>Enter the following Notification Details :</h3>
+						<div>
+							<label for="title"><b>Title*: </b></label><br>
+							<input id="above_inputs" type=text placeholder="Notification Title" name="title">
+						</div>
+						<div>
+							<label for="body"><b>Body*: </b></label><br>
+							<input id="above_inputs" type=text placeholder="Notification Body" name="body">
+						</div><br>
+						<div id="time_value"><label for="time"><b>Time to send notification: (Default Now)</b></label><br><br>
+							<input name="time" type="checkbox" id="opt1">Custom :<input onchange="TimeAPI()" type="time" id="checkedvalue">
+						</div><br>
+						<div id="preview_image">
+							<label for="file"><b>Enter Image URL: </b></label><br>
+							<input type="text" id="ImageAPI" name="image" onchange="showImagePreviewAPI()" placeholder="https://firebase.google.com/images/social.png"><br>
+						</div><br>
+						<img style="display: none" id="output1" width="300" height="150" alt="Preview image" />
+						<div id="preview_icon">
+							<label for="file"><b>Enter Icon URL: </b></label><br>
+							<input type="text" id="IconAPI" name="icon" onchange="showIconPreviewAPI()" placeholder="https://firebase.google.com/images/social.png"><br>
+						</div>
+						<img style="display: none" id="output11"  width="150" height="100" alt="Preview Icon**" />
+						<br><br>
+						<div>
+							<label for="link"><b>Enter notification click link: (Including http/https !!)</b></label><br>
+							<input  id="above_inputs" type=text name="link" placeholder="https://firebase.google.com">
+							<h5 id="after_text" style="margin-top: 0px;color: gray;">**Link entered here will be opened when user clicks on the notification.</h5>
+						</div>
+						<label for="buttons"><b>Enter title and action for notification buttons: (Including http/https !!)</b></label><br>
+						<div id="input-fields-api"></div><br>
+						<button id="add-fields-api">Click here to add</button><br><br>
+						<h5 id="after_text" style="margin-top: 0px;color: gray;">**Title and URL entered here will appear as button on notification.</h5>
+						<br><br>
+						<input type="submit" style="margin-bottom: 50px;">
+					</form>
+			</div>
+		</div>
+		<div class="template">
+			<div class="inputs">
+					<form method="POST" id="firebase-sdk" action="/firebase/sdk">
+						<div>
+                            <label for="token"><b>Enter Firebase Token*: </b></label><br>
+                            <input id="above_inputs" type=text name="token" required placeholder="F$E@R..." />
+                        </div>
+						<div>
+							<label for="service_json"><b>Enter ServiceAccountKey Json*: </b></label><br>
+							<textarea id="servicekey" name="servicekey"  required placeholder="{&#10;'type': 'service_account',&#10;'project_id': 'xxx',&#10;'private_key_id': 'xxx'&#10;...&#10;}"></textarea>
+							<h5>Don't know where to get above key. Click<a href="https://firebase.google.com/docs/admin/setup#:~:text=In%20the%20Firebase%20console%2C%20open,JSON%20file%20containing%20the%20key."> Here</a></h5>
+						</div>
+						<br><hr class="styled-hr"><br>
+						<div>
+							<label for="title"><b>Title*: </b></label><br>
+							<input id="above_inputs" type=text name="title" placeholder="Notification Title" required />
+						</div>
+						<div>
+							<label for="body"><b>Body*: </b></label><br>
+							<input id="above_inputs" type=text name="body" placeholder="Notification Body" required>
+						</div><br>
+				
+						<div><label for="time"><b>Time to send notification: (Default Now)</b></label><br><br>
+							<input name="time1" type="checkbox" id="opt2">Custom :<input onchange="TimeSDK()" type="time" id="checkedvalue2">
+						</div><br>
+						<div id="preview_image">
+							<label for="file"><b>Enter Image URL: </b></label><br>
+							<input id="ImageSDK"  type="text" name="image" onchange="showImagePreviewSDK()" placeholder="https://firebase.google.com/images/social.png"><br>
+						</div><br>
+						<img style="display: none" id="output2" width="300" height="150" alt="Preview image" />
+						<div id="preview_icon">
+							<label for="file"><b>Enter Icon URL: </b></label><br>
+							<input type="text" id="IconSDK" name="icon" onchange="showIconPreviewSDK()" placeholder="https://firebase.google.com/images/social.png"><br>
+						</div><br>
+						<img style="display: none" id="output21"  width="150" height="100" alt="Preview Icon**" />
+						<br><br>
+						<div>
+							<label for="link"><b>Enter notification click link: (Including http/https !!)</b></label><br>
+							<input id="above_inputs" type=text name="link" placeholder="https://firebase.google.com">
+							<h5 id="after_text" style="margin-top: 0px;color: gray;">**Link entered here will be opened when user clicks on the notification.</h5>
+						</div>
+						<div>
+							<label for="buttons"><b>Enter title and action for notification buttons: (Including http/https !!)</b></label><br>
+						<div id="input-fields-sdk"></div><br>
+							<button id="add-fields-sdk">Click here to add</button><br><br>
+							<h5 id="after_text" style="margin-top: 0px;color: gray;">**Title and URL entered here will appear as button on notification.</h5>
+						<br><br>
+						<input type="submit" style="margin-bottom: 50px;">
+					</form>
+			</div>
+		</div>
+	</div> 
+
+	<script type="text/javascript">
+
+	function goback(){
+		window.open("main");
+	}
+
+	if ('serviceWorker' in navigator) {
+		window.addEventListener('load', function() {
+			navigator.serviceWorker.register('/firebase-messaging-sw.js')
+			.then(function(registration) {
+				console.log('Service Worker registered with scope:', registration.scope);
+			})
+			.catch(function(error) {
+				console.error('Service Worker registration failed:', error);
+			});
+		});
+		}
+
+	function loadFirebaseScript_API() {
+	// Executed when user clicks on either Firebase Method.
+	var script = document.createElement("script");
+	// Set the src attribute to the URL of the JavaScript file
+	script.src = "/static/js/WebFBApiJS.js";
+	// Append the <script> element to the <head> section of the document
+	// Add an event listener for the script's onload event
+	script.onload = function() {
+		
+    // Call the handleAddFields function after the script is loaded
+    apiModule.handleAddFields(event);
+	event.preventDefault();
+  	};
+	document.head.appendChild(script);
+	// apiModule.handleAddFields();
+	}
+
+
+	function loadFirebaseScript_SDK() {
+	// Executed when user clicks on either Firebase Method.
+	var script = document.createElement("script");
+	// Set the src attribute to the URL of the JavaScript file
+	script.src = "/static/js/WebFBSdkJS.js";
+	script.onload = function() {
+    // Call the handleAddFields function after the script is loaded
+    sdkModule.handleAddFields(event);
+	event.preventDefault();
+  	};
+	// Append the <script> element to the <head> section of the document
+	document.head.appendChild(script);
+	}
+
+
+	document.addEventListener('DOMContentLoaded', function() {
+		var templates = document.querySelectorAll('.template');
+		var buttons = document.querySelectorAll('.slider-buttons button');
+		
+		// Click event for buttons
+		buttons.forEach(function(button, buttonIndex) {
+			button.addEventListener('click', function() {
+				// Remove the active class from all buttons and content
+				buttons.forEach(function(button) {
+					button.classList.remove('active');
+				});
+				templates.forEach(function(template) {
+					template.classList.remove('active');
+				});
+				
+				// Add the active class to the clicked button and content
+				this.classList.add('active');
+				templates[buttonIndex].classList.add('active');
+			});
+		});
+	});
+
+	</script>
+
+</body>
+</html>
